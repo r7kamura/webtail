@@ -1,4 +1,6 @@
 require "webtail/version"
+require "webtail/web_socket"
+require "webtail/app"
 
 module Webtail
   extend self
