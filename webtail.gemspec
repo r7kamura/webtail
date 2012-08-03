@@ -14,4 +14,7 @@ Gem::Specification.new do |gem|
   gem.name          = "webtail"
   gem.require_paths = ["lib"]
   gem.version       = Webtail::VERSION
+
+  gem.add_dependency "eventmachine"
+  gem.add_dependency "em-websocket"
 end
