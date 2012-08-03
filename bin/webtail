@@ -1,6 +1,20 @@
 #!/usr/bin/env ruby
 
+require "slop"
+argv = ARGV.dup
+slop = Slop.new(:strict => true, :help => true)
+slop.banner "$ tail -f ... | webtail [options]"
+slop.on :p, :port, "port number for http server (default is 9999)"
+begin
+  slop.parse!(argv)
+rescue => e
+  puts e
+  exit!
+end
+options = slop.to_hash
+options.delete(:help)
+options[:port] ||= 9999
+
 $LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
 require "webtail"
-
-Webtail.run
+Webtail.run(options)

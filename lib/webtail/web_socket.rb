@@ -1,28 +1,44 @@
 module WebSocket
   extend self
 
+  LOG_SIZE = 100
+
   def run
-    EM::WebSocket.start(:host => "127.0.0.1", :port => "9999") do |socket|
-      socket.onopen(onopen)
-      socket.onmessage(onmessage)
-      socket.onerror(onerror)
+    Webtail.channel.subscribe do |msg|
+      logs << msg
+      logs.shift if logs.size > LOG_SIZE
+    end
+
+    EM::WebSocket.start(:host => "127.0.0.1", :port => port) do |socket|
+      socket.onopen(&onopen(socket))
+      socket.onmessage(&onmessage)
+      socket.onerror(&onerror)
+    end
+  end
+
+  # return unused port
+  def port
+    @port ||= begin
+      s = ::TCPServer.open(0)
+      port = s.addr[1]
+      s.close
+      port
     end
   end
 
   private
 
-  def channel
-    @channel ||= EM::Channel.new
+  def logs
+    @logs ||= []
   end
 
-  def onopen
-    lambda do
-      id = channel.subscribe do |message|
+  def onopen(socket)
+    proc do
+      send_message = proc do |message|
         next unless message
-
-        str = msg.respond_to?(:force_encoding) ?
-          msg.force_encoding("UTF-8") :
-          msg
+        str = message.respond_to?(:force_encoding) ?
+          message.force_encoding("UTF-8") :
+          message
 
         begin
           socket.send(str)
@@ -31,21 +47,24 @@ module WebSocket
         end
       end
 
+      logs.each(&send_message)
+      id = Webtail.channel.subscribe(&send_message)
+
       socket.onclose do
-        channel.unsubscribe(id)
+        Webtail.channel.unsubscribe(id)
       end
     end
   end
 
-  def onmessage(message)
-    lambda do |message|
-      channel << message
+  def onmessage
+    proc do |message|
+      Webtail.channel << message
     end
   end
 
-  def onerror(error)
-    lambda do |error|
-      channel << message
+  def onerror
+    proc do |error|
+      puts error
     end
   end
 end

@@ -17,4 +17,7 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency "eventmachine"
   gem.add_dependency "em-websocket"
+  gem.add_dependency "sinatra"
+  gem.add_dependency "slop"
+  gem.add_dependency "launchy", ">= 2.0.6"
 end
