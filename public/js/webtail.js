@@ -5,7 +5,13 @@ var Webtail = {
           body   = $('body');
 
       socket.onmessage = function(message) {
+        // Insert a new line
         $('<pre>').text(message.data).appendTo('body');
+
+        // Scroll to bottom of the page
+        $('html, body').scrollTop($(document).height());
+
+        // Trigger onmessage event
         body.trigger('onmessage');
       };
     });
