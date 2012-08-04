@@ -23,6 +23,10 @@ module Webtail
         @web_socket_port = WebSocket.port
         erb :index
       end
+
+      post "/" do
+        Webtail.channel << params[:text]
+      end
     end
   end
 end
