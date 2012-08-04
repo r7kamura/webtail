@@ -5,6 +5,9 @@ var Webtail = {
           body   = $('body');
 
       socket.onmessage = function(message) {
+        // To ignore serial empty lines
+        if (message.data == '\n' && $('pre:last').text() == '\n') return;
+
         // Insert a new line
         $('<pre>').text(message.data).appendTo('body');
 
