@@ -1,10 +1,12 @@
 var Webtail = {
   run: function(port) {
+    var self = this;
+
     jQuery(function($) {
       var socket = new (WebSocket || MozWebSocket)('ws://localhost:' + port),
           body   = $('body');
 
-      socket.onmessage = function(message) {
+      self.onmessages.push(function(message) {
         // To ignore serial empty lines
         if (message.data == '\n' && $('pre:last').text() == '\n') return;
 
@@ -16,7 +18,13 @@ var Webtail = {
 
         // Trigger onmessage event
         body.trigger('onmessage');
+      });
+
+      socket.onmessage = function(message) {
+        $.each(self.onmessages, function() { this(message) });
       };
     });
-  }
+  },
+
+  onmessages: []
 };

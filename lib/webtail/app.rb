@@ -17,10 +17,13 @@ module Webtail
     end
 
     class Server < ::Sinatra::Base
+      path = File.expand_path("~/.webtailrc")
+      set :webtailrc, File.exist?(path) && File.read(path)
       set :root, File.expand_path("../../../", __FILE__)
 
       get "/" do
         @web_socket_port = WebSocket.port
+        @webtailrc = settings.webtailrc
         erb :index
       end
 
