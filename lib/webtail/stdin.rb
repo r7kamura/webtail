@@ -6,6 +6,7 @@ module Webtail
       "&lt;" => "<",
       "&gt;" => ">",
     }
+    ENTITY_KEYS_REGEXP = Regexp.union(ENTITY_MAP.keys)
 
     def run
       STDIN.each do |line|
@@ -22,7 +23,7 @@ module Webtail
     end
 
     def unescape_entity(str)
-      str.gsub(Regexp.union(ENTITY_MAP.keys)) {|key| ENTITY_MAP[key] }
+      str.gsub(ENTITY_KEYS_REGEXP) {|key| ENTITY_MAP[key] }
     end
   end
 end
