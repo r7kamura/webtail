@@ -4,7 +4,7 @@ require "slop"
 argv = ARGV.dup
 slop = Slop.new(:strict => true, :help => true)
 slop.banner "$ tail -f ... | webtail [options]"
-slop.on :p, :port, "port number for http server (default is 9999)"
+slop.on :p, :port=, "port number for http server (default is 9999)"
 begin
   slop.parse!(argv)
 rescue => e
