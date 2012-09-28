@@ -3,14 +3,15 @@ var Webtail = {
     var self = this;
     jQuery(function($) {
       var socket = new (WebSocket || MozWebSocket)('ws://localhost:' + port);
+      var context = {};
       socket.onmessage = function(message) {
-        $.each(self.onmessages, function() { this(message) });
+          $.each(self.onmessages, function() { this(message, context) });
       };
     });
   },
 
   onmessages: [
-    function(message) {
+    function(message, context) {
       // To ignore serial empty lines
       if (message.data == '\n' && $('pre:last').text() == '\n') return;
 
