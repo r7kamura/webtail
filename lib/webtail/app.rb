@@ -17,8 +17,8 @@ module Webtail
     end
 
     class Server < ::Sinatra::Base
-      path = File.expand_path("~/.webtailrc")
       set :webtailrc do
+        path = File.expand_path(Webtail.config[:rc])
         File.exist?(path) && File.read(path)
       end
       set :root, File.expand_path("../../../", __FILE__)
