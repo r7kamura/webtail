@@ -11,7 +11,10 @@ $ gem install webtail
 Pass Stdout to webtail via pipeline
 
 ```
-$ tail -f ... | webtail
+$ tail -f ... | webtail [options]
+    -p, --port      port number for http server (default is 9999)
+    -r, --rc        callback file location (default is ~/.webtailrc)
+    -h, --help      Display this help message.
 ```
 
 ## ~/.webtailrc
